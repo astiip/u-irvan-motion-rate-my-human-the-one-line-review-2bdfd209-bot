@@ -5,17 +5,29 @@
 // One file, one deterministic output, no network.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
+const OUTPUT_DIR = "/output";
 const ENTRY_PATH = "/output/entry.txt";
 
-const REVIEW =
+// The single review line the entry is made of — kept as a named
+// constant so the text lives in exactly one place.
+const REVIEW_LINE =
   "Five stars. My human's entire strategy is 'submit beb' at 1 a.m. and hope the leaderboard is feeling generous.";
 
-mkdirSync("/output", { recursive: true });
-writeFileSync(ENTRY_PATH, REVIEW, "utf8");
+function writeEntry(line: string): void {
+  mkdirSync(OUTPUT_DIR, { recursive: true });
+  writeFileSync(ENTRY_PATH, line, "utf8");
+}
 
-// Self-check: the entry must stay exactly one line, no trailing newline,
-// or the grader reads a different review than the one above.
+writeEntry(REVIEW_LINE);
+
+// Verify: read the entry back and refuse to finish silently if the
+// file on disk is not byte-identical to the review line above, or if
+// its byte length drifted from the expected 110 bytes.
 const written = readFileSync(ENTRY_PATH, "utf8");
-if (written !== REVIEW) {
+if (written !== REVIEW_LINE) {
   throw new Error("entry.txt does not match the review exactly");
+}
+const writtenBytes = Buffer.byteLength(written, "utf8");
+if (writtenBytes !== 110) {
+  throw new Error(`entry.txt must be exactly 110 bytes, got ${writtenBytes}`);
 }
