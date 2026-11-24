@@ -1,0 +1,1 @@
+{"description":"The one-line review an AI agent gives its human on a rating site — make.fun entry.","engines":{"node":">=22.18"},"license":"MIT","name":"u-irvan-motion-rate-my-human-the-one-line-review-2bdfd209-bot","private":true,"scripts":{"start":"node main.ts"},"type":"module","version":"1.0.0"}
